@@ -1,0 +1,34 @@
+@charset "utf-8";
+
+* {margin: 0;padding: 0;box-sizing: border-box;}
+body {background-color: #eee;gap:20px;position: relative;}
+button {height:30px;line-height: 30px;padding:0 10px;border-radius: 3px;background-color: #555;color: #fff;transition: .2s;font-size: 16px;}
+button:hover,button.on,button:active {background-color: #3d85c6;}
+.sp-replacer {height: 30px !important;}
+
+.wrap {width: 100%;max-width: 1200px;margin: 0 auto;}
+.wrap-box {padding: 20px;background-color: #fff;border-radius: 20px;box-shadow: 0 2px 20px rgba(50,50,93,0.11)}
+.flex-center {display: flex;flex-direction: column;justify-content: center;align-items: center;}
+
+/* menu */
+.draw-wrap {display: flex;justify-content: center;gap: 20px;}
+.draw-wrap ul {display: flex;align-items: center;gap: 10px;background-color: #f1f1f1;border-radius: 5px;padding: 7px;}
+.draw-wrap ul li {display: flex;align-items: center;gap: 5px}
+.draw-wrap button[data-id='removeAll'] {font-size: 22px;font-weight: bolder;}
+.draw-wrap select {height: 30px;line-height: 30px;padding: 0px 10px;}
+.draw-wrap select span.line {display:block;width: 10px;background-color: #333;}
+.draw-wrap select span.line {width: 100%;background-color: #333;}
+.draw-wrap select option:nth-child(1) span.line {height: 3px;}
+.draw-wrap select option:nth-child(2) span.line {height: 8px;}
+.draw-wrap select option:nth-child(3) span.line {height: 15px;}
+.draw-wrap select option:nth-child(4) span.line {height: 20px;}
+.draw-wrap select option:nth-child(5) span.line {height: 25px;}
+
+/* canvas */
+.canvas-wrap {flex-direction: row;}
+.canvas-wrap canvas {width: 100%;max-width: 500px;min-height: 400px;}
+.canvas-wrap canvas img {width: 100%;}
+
+.btn-wrap {display: flex;justify-content: end;}
+.btn-wrap button {display: flex;align-items: center;gap: 5px;background-color: #3d85c6;height: 40px;line-height: 40px;padding: 0 15px}
+canvas.hidden {position:absolute;top:-1000px;}
