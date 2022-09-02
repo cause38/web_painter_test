@@ -8,12 +8,11 @@
     const canvas = document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
 
-    let img;
+    let img,
+        drawColor,
+        _color = {};
 
     const draw = (() => {
-        let canvasOffset = $canvas.offset();
-        let offsetX = canvasOffset.left;
-        let offsetY = canvasOffset.top;
         let isDown = false;
         let PI2 = Math.PI * 2;
 
@@ -21,9 +20,9 @@
             initEvent(id) {
                 isDown = false;
                 $canvas.off();
-                $canvas.on('mousedown', e => this.handleMouseDown(e));
                 $canvas.on('mousemove', e => this.handleMouseMove(e, id));
                 $canvas.on('mouseup', e => this.handleMouseUp(e, id));
+                $canvas.on('mousedown', e => this.handleMouseDown(e));
                 $canvas.on('mouseout', e => this.handleMouseOut(e));
             },
             handleMouseUp(e, id) {
@@ -61,19 +60,25 @@
             handleMouseMove(e, id) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (!isDown) return;
-                mouseX = parseInt(e.clientX - offsetX);
-                mouseY = parseInt(e.clientY - offsetY);
-                // console.log(`mouseX => ${mouseX}`);
-                // console.log(`mouseY => ${mouseY}`);
-                // console.log(`clientX => ${e.clientX}`);
-                // console.log(`clientY => ${e.clientY}`);
-                // console.log(`offsetX => ${offsetX}`);
-                // console.log(`offsetY => ${offsetY}`);
+
+                mouseX = parseInt(e.offsetX);
+                mouseY = parseInt(e.offsetY);
+                drawColor = _color[id] ? _color[id] : '#ff0000';
 
                 if (id === 'text') {
                 } else if (id === 'brush') {
+                    ctx.fillStyle = drawColor;
+                    ctx.strokeStyle = drawColor;
+
+                    if (!isDown) {
+                        ctx.beginPath();
+                        ctx.moveTo(mouseX, mouseY);
+                    } else {
+                        ctx.lineTo(mouseX, mouseY);
+                        ctx.stroke();
+                    }
                 } else if (id === 'blur') {
+                    if (!isDown) return;
                     ctx.beginPath();
                     ctx.arc(mouseX, mouseY, 20, 0, PI2);
                     ctx.closePath();
@@ -134,13 +139,22 @@
                 img.src = '/assest/img/test.jpg';
             },
             setColorPicker() {
-                $('.color-picker').spectrum({
-                    type: 'color',
-                    showPaletteOnly: true,
-                    togglePaletteOnly: true,
-                    hideAfterPaletteSelect: true,
-                    showInput: true,
-                    showInitial: true,
+                const item = document.querySelectorAll('.color-picker');
+
+                item.forEach(el => {
+                    const id = el.getAttribute('data-id');
+
+                    $(el).spectrum({
+                        type: 'color',
+                        showPaletteOnly: true,
+                        togglePaletteOnly: true,
+                        hideAfterPaletteSelect: true,
+                        showInput: true,
+                        showInitial: true,
+                        change: color => {
+                            _color[id] = color.toHexString();
+                        },
+                    });
                 });
             },
             changTool(e) {
@@ -164,7 +178,7 @@
                 const anchorTag = document.createElement('a');
                 document.body.appendChild(anchorTag);
                 anchorTag.href = imageData;
-                anchorTag.download = 'imageData';
+                anchorTag.download = 'image';
                 anchorTag.click();
                 document.body.removeChild(anchorTag);
             },

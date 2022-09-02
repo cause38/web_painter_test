@@ -27,7 +27,7 @@
             <ul>
                 <li>
                     <button type="button" data-id="brush">🖌</button>
-                    <input class="color-picker" value='#ff0000' />
+                    <input class="color-picker" data-id="brush" value='#ff0000' />
                     <select id="brushSize">
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -41,11 +41,11 @@
                 <li>
                     <button type="button" data-id="blur">🧪</button>
                     <select id="blurRadius">
-                        <option value="3">10</option>
-                        <option value="5">25</option>
-                        <option value="8">50</option>
-                        <option value="10">75</option>
-                        <option value="15">100</option>
+                        <option value="5">10</option>
+                        <option value="6">25</option>
+                        <option value="10">50</option>
+                        <option value="15">75</option>
+                        <option value="20">100</option>
                     </select>
                 </li>
             </ul>
