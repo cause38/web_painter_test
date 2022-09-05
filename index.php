@@ -71,8 +71,6 @@
     </div>
     <canvas id="copyCanvas" class="hidden"></canvas>
 
-
-
     <!-- script -->
     <script src="/assest/js/jquery-3.5.1.min.js" defer></script>
     <script src="https://kit.fontawesome.com/e8137f8867.js" crossorigin="anonymous"></script>

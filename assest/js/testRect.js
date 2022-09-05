@@ -4,7 +4,6 @@
     const copyCanvas = document.getElementById('copyCanvas');
     let copyCtx = copyCanvas.getContext('2d');
 
-    const $canvas = $('#canvas');
     const canvas = document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
 
@@ -45,12 +44,13 @@
         })();
 
         return {
-            initEvent(id) {
+            initEvent() {
                 isDown = false;
-                canvas.onmousemove = e => this.handleMouseMove(e);
-                canvas.onmouseup = e => this.handleMouseUp(e);
-                canvas.onmousedown = e => this.handleMouseDown(e);
-                canvas.onmouseout = e => this.handleMouseOut(e);
+                $(canvas).off();
+                $(canvas).on('mousedown', e => this.handleMouseMove(e));
+                $(canvas).on('mouseup', e => this.handleMouseUp(e));
+                $(canvas).on('mousedown', e => this.handleMouseDown(e));
+                $(canvas).on('mouseout', e => this.handleMouseOut(e));
             },
             handleMouseUp(e) {
                 e.preventDefault();
@@ -61,31 +61,24 @@
                 } else if (action === 'brush') {
                 } else if (action === 'blur') {
                     const blurRadius = document.getElementById('blurRadius').value;
-                    ctx.closePath();
-                    tempCtx.closePath();
-                    copyCtx.closePath();
                     tempCtx.save();
                     tempCtx.globalCompositeOperation = 'source-in';
-                    tempCtx.drawImage(img, 0, 0);
+                    tempCtx.drawImage(canvas, 0, 0);
                     tempCtx.restore();
 
                     copyCtx.save();
                     copyCtx.drawImage(tempCanvas, 0, 0);
                     copyCtx.restore();
-                    boxBlurCanvasRGBA('copyCanvas', 0, 0, _width, _height, blurRadius, 0);
+                    boxBlurCanvasRGBA('copyCanvas', 0, 0, copyCanvas.width, copyCanvas.height, blurRadius, 0);
 
                     ctx.save();
-                    ctx.clearRect(0, 0, _width, _height);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(copyCanvas, 0, 0);
                     ctx.globalCompositeOperation = 'destination-over';
                     ctx.drawImage(img, 0, 0);
                     ctx.restore();
                 } else if (action === 'circle') {
                 } else if (action === 'rect') {
-                    ctx.setLineDash(0);
-                    ctx.clearRect(0, 0, mouseX - startX, mouseY - startY);
-                    ctx.drawImage(img, 0, 0);
-                    ctx.strokeRect(startX, startY, mouseX - startX, mouseY - startY);
                 } else if (action === 'arrow') {
                 } else if (action === 'ruler') {
                 } else if (action === 'angle') {
@@ -112,41 +105,30 @@
                         ctx.stroke();
                     }
                 } else if (action === 'blur') {
-                    drawColor = '#ffffff';
-                    ctx.fillStyle = drawColor;
-                    ctx.strokeStyle = drawColor;
-                    ctx.lineWidth = 20;
-                    tempCtx.lineWidth = 20;
-                    copyCtx.lineWidth = 20;
-                    ctx.lineCap = 'round';
-                    tempCtx.lineCap = 'round';
-                    copyCtx.lineCap = 'round';
-
-                    if (!isDown) {
-                        ctx.beginPath();
-                        ctx.moveTo(mouseX, mouseY);
-                        tempCtx.beginPath();
-                        tempCtx.moveTo(mouseX, mouseY);
-                        copyCtx.beginPath();
-                        copyCtx.moveTo(mouseX, mouseY);
-                    } else {
-                        ctx.lineTo(mouseX, mouseY);
-                        ctx.stroke();
-                        tempCtx.lineTo(mouseX, mouseY);
-                        tempCtx.stroke();
-                        copyCtx.lineTo(mouseX, mouseY);
-                        copyCtx.stroke();
-                    }
+                    if (!isDown) return;
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(mouseX, mouseY, 20, 0, PI2);
+                    ctx.closePath();
+                    ctx.fill();
+                    tempCtx.beginPath();
+                    tempCtx.arc(mouseX, mouseY, 20, 0, PI2);
+                    tempCtx.closePath();
+                    tempCtx.fill();
+                    copyCtx.beginPath();
+                    copyCtx.arc(mouseX, mouseY, 20, 0, PI2);
+                    copyCtx.closePath();
+                    copyCtx.fill();
                 } else if (action === 'circle') {
                 } else if (action === 'rect') {
-                    if (isDown) {
-                        copyCtx.lineWidth = 3;
-                        copyCtx.lineCap = 'square';
-                        copyCtx.fillStyle = 'transparent';
-                        copyCtx.setLineDash([6]);
-                        copyCtx.strokeRect(startX, startY, mouseX - startX, mouseY - startY);
-                    }
+                    rectCtx.strokeRect(startX, startY, mouseX - startX, mouseY - startY);
                 } else if (action === 'arrow') {
+                    // ctx.beginPath();
+                    // drawFn.arrow(ctx, 10, 30, 200, 150);
+                    // drawFn.arrow(ctx, 100, 200, 400, 50);
+                    // drawFn.arrow(ctx, 200, 30, 10, 150);
+                    // drawFn.arrow(ctx, 400, 200, 100, 50);
+                    // ctx.stroke();
                 } else if (action === 'ruler') {
                 } else if (action === 'angle') {
                 }
@@ -154,21 +136,58 @@
             handleMouseDown(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                copyCtx.clearRect(0, 0, _width, _height);
                 isDown = true;
+                copyCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
 
-                startX = e.offsetX;
-                startY = e.offsetY;
+                startX = parseInt(e.offsetX);
+                startY = parseInt(e.offsetY);
 
-                if (action === 'rect') {
-                    copy;
-                }
+                // if (action === 'text') {
+                //     var input = document.createElement('textarea');
+                //     input.id = 'textbox';
+                //     input.type = 'text';
+                //     input.style.position = 'fixed';
+                //     input.style.left = startX + 'px';
+                //     input.style.top = startY - Math.floor(e_group.size.replace('px', '') / 2) + 'px';
+                //     input.style.width = '500px';
+                //     input.style.opacity = '0.5';
+                //     input.style.filter.opacity = '0.5';
+                //     input.style.fontSize = '12px';
+                //     input.style.zIndex = '2147483647';
+
+                //     input.onkeydown = this.handleENTER;
+
+                //     document.body.appendChild(input);
+
+                //     input.focus();
+                // }
             },
             handleMouseOut(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 isDown = false;
             },
+            // handleENTER(event) {
+            //     var blank_pattern = /^\s+|\s+$/g;
+            //     var keyCode = event.keyCode;
+            //     if (keyCode === 27) {
+            //         var textList = this.value.split('\n');
+            //         for (var i = 0; i < textList.length; i++) {
+            //             e_group.drawText(
+            //                 textList[i],
+            //                 parseInt(e_group.pageX, 10),
+            //                 parseInt(e_group.pageY, 10) + e_group.size.replace('px', '') * i + 5
+            //             );
+            //         }
+            //         document.body.removeChild(this);
+            //         if (this.value.replace(blank_pattern, '') != '') {
+            //             e_group.saveImage = e_group.ctx.getImageData(0, 0, e_group.canvas.width, e_group.canvas.height);
+            //             e_group.addHistory();
+            //         }
+            //         e_group.hasInput = false;
+            //         e_group.textactive = false;
+            //     }
+            // },
         };
     })();
 
@@ -227,19 +246,14 @@
                 const onButton = document.querySelector('button[class="on"]');
                 if (onButton) onButton.classList.remove('on');
 
-                if (id === 'removeAll') {
-                    if (confirm('삭제 시 복구가 불가능합니다. \n정말 삭제하시겠습니까?')) {
-                        ctx.clearRect(0, 0, _width, _height);
-                        tempCtx.clearRect(0, 0, _width, _height);
-                        ctx.drawImage(img, 0, 0);
-                    }
+                if (action === 'removeAll') {
+                    ctx.clearRect(0, 0, _width, _height);
+                    tempCtx.clearRect(0, 0, _width, _height);
+                    copyCtx.clearRect(0, 0, _width, _height);
                 } else {
-                    if (id === 'rect') {
-                        copyCanvas.style.right = 0;
-                    }
-
                     action = id;
                     e.currentTarget.classList.add('on');
+                    draw.initEvent(e);
                 }
             },
             downloadImg() {

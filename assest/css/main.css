@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 * {margin: 0;padding: 0;box-sizing: border-box;}
-body {background-color: #eee;gap:20px;position: relative;}
+body {background-color: #eee;gap:20px;}
 button {height:30px;line-height: 30px;padding:0 10px;border-radius: 3px;background-color: #555;color: #fff;transition: .2s;font-size: 16px;}
 button:hover,button.on,button:active {background-color: #3d85c6;}
 .sp-replacer {height: 30px !important;}
@@ -32,3 +32,5 @@ button:hover,button.on,button:active {background-color: #3d85c6;}
 .btn-wrap {display: flex;justify-content: end;}
 .btn-wrap button {display: flex;align-items: center;gap: 5px;background-color: #3d85c6;height: 40px;line-height: 40px;padding: 0 15px}
 canvas.hidden {position:absolute;top:-1000px;}
+.canvas_wrap {position: relative;}
+#copyCanvas {position:absolute;top:0;right:-9999px;border: 1px solid red;}
